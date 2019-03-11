@@ -16,7 +16,7 @@ from sklearn.naive_bayes import BernoulliNB
 import NaiveBayes
 from sklearn.metrics import confusion_matrix
 import datetime
-
+import ProcessCSV
 
 # Get input from user
 print "Enter any keyword listed below"
@@ -48,29 +48,46 @@ print "Fetch yahoo finance data for "+response+" given company keyword.... "
 keyword2 = response
 # yahooData = get_yahoo_data.YahooData('2019-03-07', "2019-03-06")
 # historical_data = yahooData.getYahooData(keyword2)
-'''
-def getCSV():
-    data = requests.get('https://in.finance.yahoo.com/quote/TSLA/history?period1=1520602884&period2=1552138884&interval=1d&filter=history&frequency=1d')
 
 
+ProcessCSV.getCSV(keyword2) #downloading CSV file from yahoo finance
+historical_data_file=keyword2+".csv"
+print "historical data is : ",historical_data_file
 
-
-
-historical_data=getCSV()
-
-yahoo_open_price = {} # declaring an empty python dictionary
+yahoo_open_price = {}  # declaring an empty python dictionary
 yahoo_close_price = {}
 yahoo_high_price = {}
 yahoo_low_price = {}
-for i in range(len(historical_data)):
-    date = historical_data[i]['Date'].replace(",","")
-    yahoo_open_price.update({date: historical_data[i]['Open']}) # dictionary1.update(dictionary2); update the python dictionary;
+
+#calculate number of rows in CSV file
+'''
+reader_file=csv.reader(historical_data_file);
+rowcount=len(list(reader_file));
+print "rowcount is :", rowcount
+'''
+fields = []
+
+with open(historical_data_file,'r') as csvFile:
+    csvreader = csv.reader(csvFile)
+    fields = csvreader.next();  # to get the cursor in the second row.
+    #print fields
+    for row in csvreader:
+        print row; # type of row is list.
+        yahoo_open_price.update({row[0]: row[1]})
+        yahoo_high_price.update({row[0]: row[2]})
+        yahoo_low_price.update({row[0]: row[3]})
+        yahoo_close_price.update({row[0]: row[4]})
+    print "done\n"
+    #print "open price is : ",yahoo_open_price
+'''
+for i in range(rowcount):
+    date = historical_data[i]['Date'].replace("-","")
+    yahoo_open_price.update({date: historical_data[i]['Open']})  # dictionary1.update(dictionary2); update the python dictionary;
     yahoo_close_price.update({date: historical_data[i]['Close']})
     yahoo_high_price.update({date: historical_data[i]['High']})
     yahoo_low_price.update({date: historical_data[i]['Low']})
 
-print "Yahoo data fetched \n"
-
+print "Yahoo data fetched \n\n"
 '''
 print "Collect tweet and process twitter corpus...."
 tweet_s = []
