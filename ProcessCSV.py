@@ -6,8 +6,8 @@ from pdb import set_trace as pb
 def getCSV(keyword):
 
     symbol = keyword
-    start_date = '1520764641' # start date timestamp
-    end_date = '1552300641' # end date timestamp
+    start_date = '1522953000' # start date timestamp
+    end_date = '1554489000' # end date timestamp
 
     print "Inside process CSV file "
     print symbol
@@ -22,7 +22,7 @@ def getCSV(keyword):
     link = crumble_link.format(symbol)
     session = requests.Session()
     response = session.get(link)
-
+    print "session is : ",session;
     # get crumbs
 
     text = str(response.content)
@@ -32,7 +32,7 @@ def getCSV(keyword):
     # get cookie
 
     cookie = session.cookies.get_dict()
-
+    print "cookie is : ",cookie;
     url = "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=1d&events=history&crumb=%s" % (symbol, start_date, end_date, crumbs)
 
     r = requests.get(url,cookies=session.cookies.get_dict(),timeout=5, stream=True)
