@@ -17,7 +17,6 @@ import NaiveBayes
 from sklearn.metrics import confusion_matrix
 import datetime
 import ProcessCSV
-
 # Get input from user
 print "Enter any keyword listed below"
 print "Example --> AAPL GOOG YHOO MSFT GS"
@@ -37,7 +36,8 @@ time = 'lastweek'
 
 print "Fetch twitter data for "+ response+" company keyword...."
 
-twitterData = get_twitter_data.TwitterData('2019-03-07')
+today=datetime.date.today()
+twitterData = get_twitter_data.TwitterData(today.strftime("%Y-%m-%d"))
 tweets = twitterData.getTwitterData(keyword, time)
 print tweets
 print "Twitter data fetched \n"
@@ -438,19 +438,19 @@ for dateVal in np.unique(date_split):
             dateVal = update_date[0]+"-"+update_date[1]+"-0"+str((int(update_date[2])-1))
         else:
             dateVal = update_date[0] + "-" + update_date[1] + "-" + str((int(update_date[2]) - 1))
-        opening_price = 276.91		 # yahoo_open_price[dateVal]
-        closing_price = 284.14	 # yahoo_close_price[dateVal]
+        opening_price = yahoo_open_price[dateVal]
+        closing_price = yahoo_close_price[dateVal]
     elif day == 'Sunday':
         update_date = dateVal.split("-")
         if len(str((int(update_date[2])-2)))==1:
             dateVal = update_date[0]+"-"+update_date[1]+"-0"+str((int(update_date[2])-2))
         else:
             dateVal = update_date[0] + "-" + update_date[1] + "-" + str((int(update_date[2]) - 2))
-        opening_price = 278.84	  # yahoo_open_price[dateVal]
-        closing_price = 276.59	 # yahoo_close_price[dateVal]
+        opening_price = yahoo_open_price[dateVal]
+        closing_price = yahoo_close_price[dateVal]
     else:
-        opening_price = 282.00 # yahoo_open_price[dateVal]
-        closing_price = 276.54  # yahoo_close_price[dateVal]
+        opening_price = yahoo_open_price[dateVal]
+        closing_price =  yahoo_close_price[dateVal]
 
     print dateVal
     print "Total tweets = ", date_totalCount, " Positive tweets = ", date_PosCount, " Negative tweets = ", date_NegCount
