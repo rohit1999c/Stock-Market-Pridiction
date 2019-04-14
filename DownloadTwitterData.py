@@ -28,7 +28,6 @@ response = raw_input("Please enter Keyword: ")
 while not response:
     response = raw_input("Please enter Keyword: ")
 
-
 # Get Tweets
 keyword = '$'+response
 # time = 'today'
@@ -42,7 +41,6 @@ tweets = twitterData.getTwitterData(keyword, time)
 print tweets
 print "Twitter data fetched \n"
 
-
 print "Fetch yahoo finance data for "+response+" given company keyword.... "
 
 keyword2 = response
@@ -50,7 +48,7 @@ keyword2 = response
 # historical_data = yahooData.getYahooData(keyword2)
 
 
-ProcessCSV.getCSV(keyword2) #downloading CSV file from yahoo finance
+ProcessCSV.getCSV(keyword2)                             #downloading CSV file from yahoo finance
 historical_data_file=keyword2+".csv"
 print "historical data is : ",historical_data_file
 
@@ -86,7 +84,6 @@ for i in range(rowcount):
     yahoo_close_price.update({date: historical_data[i]['Close']})
     yahoo_high_price.update({date: historical_data[i]['High']})
     yahoo_low_price.update({date: historical_data[i]['Low']})
-
 print "Yahoo data fetched \n\n"
 '''
 print "Collect tweet and process twitter corpus...."
@@ -383,7 +380,6 @@ for train_index, test_index in kf.split(X):  # I(rohit) change it from kf to kf.
             svn_temp = accuracy_score(y_test,predicted_y)
 
 # Naive Bayes end
-
 print "Bernoulli NB"
 print "Accuracy =" ,max(NBSKL_accuracy)
 print "Precision = ", final_precision
@@ -397,26 +393,33 @@ print "Recall = ", svm_final_recall
 print "F-Measure", svm_final_fmeasure
 print "\n"
 
-
-
 print "Prediction completed \n"
-
 print "Preparing dataset for stock prediction using yahoo finance and tweet sentiment...."
+
+# making arrays for values for graph
+date_totalCountArr = []
+date_PosCountArr = []
+date_NegCountArr = []
+total_sentiment_scoreArr = []
+date_openingprice = []
+date_closingprice = []
+
 
 date_tweet_details = {}
 file = open("stockpredict.txt", "w")
+date_arr = []
 for dateVal in np.unique(date_split):
     date_totalCount = 0
     date_PosCount = 0
     date_NegCount = 0
     date_NutCount = 0
-    total_sentiment_score = 0.
+    total_sentiment_score = 0
     for row in list_tweet:
         sentiment = row[0]
         temp_date = row[1]
         sentiment_score = row[3]
         if(temp_date == dateVal):
-            total_sentiment_score += float(sentiment_score)
+            total_sentiment_score += int(float(sentiment_score))
             date_totalCount+=1
             if (sentiment == '|positive|'):
                 date_PosCount+=1
@@ -429,34 +432,50 @@ for dateVal in np.unique(date_split):
     date_tweet_details.update({dateVal: s})
 
     dateVal = dateVal.strip()
+    print "Date value is : ",dateVal
     day = datetime.datetime.strptime(dateVal, '%Y-%m-%d').strftime('%A')
     closing_price = 0.
     opening_price = 0.
     if day == 'Saturday':
-        update_date = dateVal.split("-")
-        if len(str((int(update_date[2])-1)))==1:
-            dateVal = update_date[0]+"-"+update_date[1]+"-0"+str((int(update_date[2])-1))
+        '''update_date = dateVal.split("-")
+        if len(str((int(update_date[2])+2)))==1:
+            dateVal = update_date[0]+"-"+update_date[1]+"-0"+str((int(update_date[2])+2))
         else:
-            dateVal = update_date[0] + "-" + update_date[1] + "-" + str((int(update_date[2]) - 1))
+            dateVal = update_date[0] + "-" + update_date[1] + "-" + str((int(update_date[2]) + 2))
         opening_price = yahoo_open_price[dateVal]
         closing_price = yahoo_close_price[dateVal]
+        '''
+        print dateVal + " date check sat"
+        continue;
     elif day == 'Sunday':
-        update_date = dateVal.split("-")
-        if len(str((int(update_date[2])-2)))==1:
-            dateVal = update_date[0]+"-"+update_date[1]+"-0"+str((int(update_date[2])-2))
+        ''' update_date = dateVal.split("-")
+        if len(str((int(update_date[2])+1)))==1:
+            dateVal = update_date[0]+"-"+update_date[1]+"-0"+str((int(update_date[2])+1))
         else:
-            dateVal = update_date[0] + "-" + update_date[1] + "-" + str((int(update_date[2]) - 2))
+            dateVal = update_date[0] + "-" + update_date[1] + "-" + str((int(update_date[2]) + 1))
         opening_price = yahoo_open_price[dateVal]
         closing_price = yahoo_close_price[dateVal]
+        '''
+        print dateVal + " date check sun"
+        continue
     else:
         opening_price = yahoo_open_price[dateVal]
-        closing_price =  yahoo_close_price[dateVal]
+        closing_price = yahoo_close_price[dateVal]
+        date_arr.append(dateVal)  # appending date one by one.
+        print dateVal + " date check  normal day"
 
-    print dateVal
-    print "Total tweets = ", date_totalCount, " Positive tweets = ", date_PosCount, " Negative tweets = ", date_NegCount
-    print "Total sentiment score = ", total_sentiment_score
-    print "Opening Price = ", opening_price
-    print "Closing Price = ", closing_price
+    print dateVal+" date check"   #output
+    print "Total tweets = ", date_totalCount, " Positive tweets = ", date_PosCount, " Negative tweets = ", date_NegCount #output
+    date_totalCountArr.append(date_totalCount)
+    date_PosCountArr.append(date_PosCount)
+    date_NegCountArr.append(date_NegCount)
+    total_sentiment_scoreArr.append(total_sentiment_score)
+    date_openingprice.append(opening_price)
+    date_closingprice.append(closing_price)
+
+    print "Total sentiment score = ", total_sentiment_score  #output
+    print "Opening Price = ", opening_price        # output
+    print "Closing Price = ", closing_price        #output
 
     market_status = 0
     if (float(closing_price)-float(opening_price)) > 0:
@@ -468,7 +487,7 @@ for dateVal in np.unique(date_split):
     # print " Total Tweet For date =",dateVal ," Count =" , date_totalCount
     # print " Positive Tweet For date =",dateVal ," Count =" , date_PosCount
     # print " Negative Tweet For date =",dateVal ," Count =" , date_NegCount
-    # print " Neutral Tweet For date =",dateVal ," Count =" , date_NutCount
+    # print " Neutral Tweet For date =",dateVal ,"S Count =" , date_NutCount
 file.close()
 
 print "Dataset is ready for stock prediction \n"
@@ -477,8 +496,129 @@ print "Dataset is ready for stock prediction \n"
 
 
 
+# not always working.
+#code for 1st graph (date vs total sentiment score. and line for +ve, -ve and total tweets).
+import matplotlib.pyplot as plt
+# x axis values
+#x = [1, 2, 3, 4, 5, 6]
+# corresponding y axis values
+# plotting the points
+plt.plot(date_arr, date_totalCountArr, color='black', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='black', markersize=12)
+plt.plot(date_arr, date_PosCountArr, color='green', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='green', markersize=12)
+plt.plot(date_arr, date_NegCountArr, color='red', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='red', markersize=12)
+plt.bar(date_arr, total_sentiment_scoreArr, tick_label='', width=0.8, color=['grey'])
+
+# setting x and y axis range
+plt.ylim(1, 350)
+plt.xlim(1, 7)
+
+# naming the x axis
+plt.xlabel('Date')
+# naming the y axis
+plt.ylabel('Sentiment Score')
+
+# giving a title to my graph
+plt.title('company data')
+
+
+#putting value on each bar
+import pandas as pd
+freq_series = pd.Series.from_array( total_sentiment_scoreArr)
+ax = freq_series.plot(kind='bar')
+
+# For each bar: Place a label
+for rect in ax.patches:
+    # Get X and Y placement of label from rect.
+    y_value = rect.get_height()
+    x_value = rect.get_x() + rect.get_width() / 2
+
+    # Number of points between bar and label. Change to your liking.
+    space = 5
+    # Vertical alignment for positive values
+    va = 'bottom'
+
+    # If value of bar is negative: Place label below bar
+    if y_value < 0:
+        # Invert space to place label below
+        space *= -1
+        # Vertically align label at top
+        va = 'top'
+
+    # Use Y value as label and format number with one decimal place
+    label = "{:.1f}".format(y_value)
+
+    # Create annotation
+    ax.annotate(
+        label,  # Use `label` as label
+        (x_value, y_value),  # Place label at end of the bar
+        xytext=(0, space),  # Vertically shift label by `space`
+        textcoords="offset points",  # Interpret `xytext` as offset in points
+        ha='center')  # Horizontally center label
+        #va=va)  # Vertically align label differently for
+    # positive and negative values.
+
+
+plt.xticks([0,1,2,3,4,5],date_arr) #label to each bar on x axis
+
+#save graph in directory
+plt.savefig("company data image.png")
+
+# function to show the plot
+plt.show()
 
 
 
 
+
+print "total tweets count : ",date_totalCountArr;
+print "total -ve tweets count : ",date_NegCountArr;
+print "total +ve tweets count : ",date_PosCountArr
+print "total sentiment score : ",total_sentiment_scoreArr;
+print "opening price array : ",date_openingprice;
+print "closing price array : ",date_closingprice;
+print "Date are : ",date_arr;
+#import OutputGraph as OG
+#OG.tweetsVstockprice(date_PosCountArr,date_NegCountArr,total_sentiment_score,date_arr,date_openingprice,date_closingprice);
+
+
+import matplotlib.pyplot as plt1
+import numpy as np1
+
+#total_sentiment_score = [round(x) for x in  total_sentiment_score]
+graphdata = np1.array([[0,0]]);
+i = 0
+while i < len(date_totalCountArr):
+  temp1 = date_PosCountArr[i]
+  temp2 = date_NegCountArr[i]
+  temp = np1.array([[temp1,temp2]]);
+  graphdata = np1.append(graphdata, temp, axis=0);
+  i=i+1
+
+
+length = len(graphdata);
+# Set plot parameters
+fig, ax = plt1.subplots()
+width = 0.5 # width of bar
+x = np.arange(length)
+
+
+print "graph data is : ",graphdata
+ax.bar(x, graphdata[1:,0], width, color='#cc0000', label='Case-1',align='center',tick_label='')
+ax.bar(x + width, graphdata[1:,1], width, color='#ff0066', label='Case-2',align='center',tick_label='')
+
+
+# setting x and y axis range
+plt1.ylim(1, 150)
+plt1.xlim(1, 7)
+
+# naming the x axis
+plt1.xlabel('Date')
+# naming the y axis
+plt1.ylabel('No. of Tweets')
+
+# giving a title to my graph
+plt1.title('Correlation between tweet corpus and stock prices')
+plt1.xticks([0,1,2,3,4,5],date_arr,rotation=90)
+plt1.savefig("tweet corpus vs stock prices");
+plt1.show()
 
