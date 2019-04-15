@@ -558,7 +558,7 @@ for rect in ax.patches:
     # positive and negative values.
 
 
-plt.xticks([0,1,2,3,4,5],date_arr) #label to each bar on x axis
+plt.xticks([0,1,2,3,4,5],date_arr)  #label to each bar on x axis
 
 #save graph in directory
 plt.savefig("company data image.png")
@@ -593,18 +593,19 @@ while i < len(date_totalCountArr):
   temp = np1.array([[temp1,temp2]]);
   graphdata = np1.append(graphdata, temp, axis=0);
   i=i+1
-
-
+print "graph data before delete : ",graphdata
+graphdata = np1.delete(graphdata, (0), axis=0);
+print "graph data is after delete : ",graphdata
 length = len(graphdata);
 # Set plot parameters
-fig, ax = plt1.subplots()
+#fig, ax = plt1.subplots()
 width = 0.5 # width of bar
 x = np.arange(length)
 
 
 print "graph data is : ",graphdata
-ax.bar(x, graphdata[1:,0], width, color='#cc0000', label='Case-1',align='center',tick_label='')
-ax.bar(x + width, graphdata[1:,1], width, color='#ff0066', label='Case-2',align='center',tick_label='')
+plt1.bar(x, graphdata[:,0], width, color='#cc0000', label='Case-1',align='center',tick_label='')
+plt1.bar(x + width, graphdata[:,1], width, color='#ff0066', label='Case-2',align='center',tick_label='')
 
 
 # setting x and y axis range
