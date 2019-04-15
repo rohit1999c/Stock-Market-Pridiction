@@ -523,7 +523,7 @@ plt.title('company data')
 
 #putting value on each bar
 import pandas as pd
-freq_series = pd.Series.from_array( total_sentiment_scoreArr)
+freq_series = pd.Series.from_array(total_sentiment_scoreArr)
 ax = freq_series.plot(kind='bar')
 
 # For each bar: Place a label
@@ -593,33 +593,55 @@ while i < len(date_totalCountArr):
   temp = np1.array([[temp1,temp2]]);
   graphdata = np1.append(graphdata, temp, axis=0);
   i=i+1
+
 print "graph data before delete : ",graphdata
 graphdata = np1.delete(graphdata, (0), axis=0);
 print "graph data is after delete : ",graphdata
 length = len(graphdata);
 # Set plot parameters
 #fig, ax = plt1.subplots()
-width = 0.5 # width of bar
-x = np.arange(length)
+width = 0.8 # width of bar
+#x = np.arange(length)
 
+
+
+
+from mpl_toolkits.axes_grid1 import host_subplot
+
+host = host_subplot(111)
+par = host.twinx()
+host.set_xlabel("Date")
+host.set_ylabel("No. of Tweets")
+par.set_ylabel("Stock Price")
+
+p2, = par.plot([0,3,6,9,12],[200,201,202,203,204], label="Opening Price")
+p3, = par.plot([0,3,6,9,12], [201,200,198,200,206], label="Closing price")
+
+
+leg = plt.legend()
+host.yaxis.get_label().set_color(p2.get_color())
+leg.texts[0].set_color(p2.get_color())
+
+par.yaxis.get_label().set_color(p3.get_color())
+leg.texts[1].set_color(p3.get_color())
 
 print "graph data is : ",graphdata
-plt1.bar(x, graphdata[:,0], width, color='#cc0000', label='Case-1',align='center',tick_label='')
-plt1.bar(x + width, graphdata[:,1], width, color='#ff0066', label='Case-2',align='center',tick_label='')
-
+plt1.bar([0,3,6,9,12], graphdata[:,0], width, color='#cc0000', label='Positive',align='edge',tick_label='')
+plt1.bar([1,4,7,10,13], graphdata[:,1], width, color='#ff0066', label='Negative',align='edge',tick_label='')
 
 # setting x and y axis range
 plt1.ylim(1, 150)
-plt1.xlim(1, 7)
+#plt1.xlim(1,15)
 
 # naming the x axis
-plt1.xlabel('Date')
+#plt1.xlabel('Date')
 # naming the y axis
-plt1.ylabel('No. of Tweets')
+
+#plt1.ylabel('No. of Tweets')
 
 # giving a title to my graph
 plt1.title('Correlation between tweet corpus and stock prices')
-plt1.xticks([0,1,2,3,4,5],date_arr,rotation=90)
+plt1.xticks([0,3,6,9,12],date_arr)
 plt1.savefig("tweet corpus vs stock prices");
 plt1.show()
 
