@@ -459,8 +459,8 @@ for dateVal in np.unique(date_split):
         print dateVal + " date check sun"
         continue
     else:
-        opening_price = yahoo_open_price[dateVal]
-        closing_price = yahoo_close_price[dateVal]
+        opening_price = float(yahoo_open_price[dateVal])
+        closing_price = float(yahoo_close_price[dateVal])
         date_arr.append(dateVal)  # appending date one by one.
         print dateVal + " date check  normal day"
 
@@ -503,9 +503,9 @@ import matplotlib.pyplot as plt
 #x = [1, 2, 3, 4, 5, 6]
 # corresponding y axis values
 # plotting the points
-plt.plot(date_arr, date_totalCountArr, color='black', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='black', markersize=12)
-plt.plot(date_arr, date_PosCountArr, color='green', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='green', markersize=12)
-plt.plot(date_arr, date_NegCountArr, color='red', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='red', markersize=12)
+plt.plot(date_arr, date_totalCountArr, color='black', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='black', markersize=12,label="Total Tweets")
+plt.plot(date_arr, date_PosCountArr, color='green', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='green', markersize=12,label="Positive Tweets")
+plt.plot(date_arr, date_NegCountArr, color='red', linestyle='dashed', linewidth=2, marker='.', markerfacecolor='red', markersize=12,label="Negative Tweets")
 plt.bar(date_arr, total_sentiment_scoreArr, tick_label='', width=0.8, color=['grey'])
 
 # setting x and y axis range
@@ -585,12 +585,13 @@ import matplotlib.pyplot as plt1
 import numpy as np1
 
 #total_sentiment_score = [round(x) for x in  total_sentiment_score]
-graphdata = np1.array([[0,0]]);
+graphdata = np1.array([[0,0,0]]);
 i = 0
 while i < len(date_totalCountArr):
   temp1 = date_PosCountArr[i]
   temp2 = date_NegCountArr[i]
-  temp = np1.array([[temp1,temp2]]);
+  temp3 = total_sentiment_scoreArr[i]
+  temp = np1.array([[temp1,temp2,temp3]]);
   graphdata = np1.append(graphdata, temp, axis=0);
   i=i+1
 
@@ -614,24 +615,28 @@ host.set_xlabel("Date")
 host.set_ylabel("No. of Tweets")
 par.set_ylabel("Stock Price")
 
-p2, = par.plot([0,3,6,9,12],[200,201,202,203,204], label="Opening Price")
-p3, = par.plot([0,3,6,9,12], [201,200,198,200,206], label="Closing price")
+p2, = par.plot([2,7,12,17,22,26],date_openingprice, label="Opening Price",linestyle='dashed', linewidth=2, marker='.')
+p3, = par.plot([2,7,12,17,22,26],date_closingprice, label="Closing price",linestyle='dashed', linewidth=2, marker='.')
 
 
 leg = plt.legend()
+
+'''
 host.yaxis.get_label().set_color(p2.get_color())
 leg.texts[0].set_color(p2.get_color())
 
 par.yaxis.get_label().set_color(p3.get_color())
 leg.texts[1].set_color(p3.get_color())
+'''
 
 print "graph data is : ",graphdata
-plt1.bar([0,3,6,9,12], graphdata[:,0], width, color='#cc0000', label='Positive',align='edge',tick_label='')
-plt1.bar([1,4,7,10,13], graphdata[:,1], width, color='#ff0066', label='Negative',align='edge',tick_label='')
+plt1.bar([0,5,10,15,20,24], graphdata[:,0], width, color='green', label='Positive',align='edge',tick_label='')
+plt1.bar([1,6,11,16,21,25], graphdata[:,1], width, color='red', label='Negative',align='edge',tick_label='')
+plt1.bar([2,7,12,17,22,26], graphdata[:,2], width, color='blue', label='Sentiment Score',align='edge',tick_label='')
 
 # setting x and y axis range
-plt1.ylim(1, 150)
-#plt1.xlim(1,15)
+plt1.ylim(1, 300)
+plt1.xlim(1,30)
 
 # naming the x axis
 #plt1.xlabel('Date')
@@ -641,7 +646,7 @@ plt1.ylim(1, 150)
 
 # giving a title to my graph
 plt1.title('Correlation between tweet corpus and stock prices')
-plt1.xticks([0,3,6,9,12],date_arr)
+plt1.xticks([0,5,10,15,20,25],date_arr,rotation=30)
 plt1.savefig("tweet corpus vs stock prices");
 plt1.show()
 
