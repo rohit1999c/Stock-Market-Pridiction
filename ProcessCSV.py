@@ -6,8 +6,8 @@ from pdb import set_trace as pb
 def getCSV(keyword):
 
     symbol = keyword
-    start_date = '1522953000' # start date timestamp
-    end_date = '1554489000' # end date timestamp
+    start_date = '1555698600' # start date timestamp
+    end_date = '1556303400' # end date timestamp
 
     print "Inside process CSV file "
     print symbol

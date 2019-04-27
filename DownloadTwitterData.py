@@ -199,6 +199,7 @@ def getFeatureVectorAndLabels(tweets, featureList):
 url = urlopen('http://www2.compute.dtu.dk/~faan/data/AFINN.zip')
 zipfile = ZipFile(StringIO(url.read()))
 afinn_file = zipfile.open('AFINN/AFINN-111.txt')
+#afinn_file = open('AFINN-111.txt')
 
 afinn = dict()
 for line in afinn_file:
@@ -437,7 +438,8 @@ for dateVal in np.unique(date_split):
     closing_price = 0.
     opening_price = 0.
     if day == 'Saturday':
-        '''update_date = dateVal.split("-")
+        '''
+        update_date = dateVal.split("-")
         if len(str((int(update_date[2])+2)))==1:
             dateVal = update_date[0]+"-"+update_date[1]+"-0"+str((int(update_date[2])+2))
         else:
@@ -448,7 +450,8 @@ for dateVal in np.unique(date_split):
         print dateVal + " date check sat"
         continue;
     elif day == 'Sunday':
-        ''' update_date = dateVal.split("-")
+        '''
+        update_date = dateVal.split("-")
         if len(str((int(update_date[2])+1)))==1:
             dateVal = update_date[0]+"-"+update_date[1]+"-0"+str((int(update_date[2])+1))
         else:
@@ -615,24 +618,34 @@ host.set_xlabel("Date")
 host.set_ylabel("No. of Tweets")
 par.set_ylabel("Stock Price")
 
+p2, = par.plot([2,7,12,17,22],date_openingprice, label="Opening Price",linestyle='dashed', linewidth=2, marker='.')
+p3, = par.plot([2,7,12,17,22],date_closingprice, label="Closing price",linestyle='dashed', linewidth=2, marker='.')
+
+'''
 p2, = par.plot([2,7,12,17,22,26],date_openingprice, label="Opening Price",linestyle='dashed', linewidth=2, marker='.')
 p3, = par.plot([2,7,12,17,22,26],date_closingprice, label="Closing price",linestyle='dashed', linewidth=2, marker='.')
-
+'''
 
 leg = plt.legend()
 
 '''
 host.yaxis.get_label().set_color(p2.get_color())
 leg.texts[0].set_color(p2.get_color())
-
 par.yaxis.get_label().set_color(p3.get_color())
 leg.texts[1].set_color(p3.get_color())
 '''
 
 print "graph data is : ",graphdata
+plt1.bar([0,5,10,15,20], graphdata[:,0], width, color='green', label='Positive',align='edge',tick_label='')
+plt1.bar([1,6,11,16,21], graphdata[:,1], width, color='red', label='Negative',align='edge',tick_label='')
+plt1.bar([2,7,12,17,22], graphdata[:,2], width, color='blue', label='Sentiment Score',align='edge',tick_label='')
+
+'''
+print "graph data is : ",graphdata
 plt1.bar([0,5,10,15,20,24], graphdata[:,0], width, color='green', label='Positive',align='edge',tick_label='')
 plt1.bar([1,6,11,16,21,25], graphdata[:,1], width, color='red', label='Negative',align='edge',tick_label='')
 plt1.bar([2,7,12,17,22,26], graphdata[:,2], width, color='blue', label='Sentiment Score',align='edge',tick_label='')
+'''
 
 # setting x and y axis range
 plt1.ylim(1, 300)
@@ -647,6 +660,11 @@ plt1.xlim(1,30)
 # giving a title to my graph
 plt1.title('Correlation between tweet corpus and stock prices')
 plt1.xticks([0,5,10,15,20,25],date_arr,rotation=30)
+
+'''
+plt1.xticks([0,5,10,15,20,25],date_arr,rotation=30)
+'''
+
+
 plt1.savefig("tweet corpus vs stock prices");
 plt1.show()
-

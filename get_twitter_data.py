@@ -35,7 +35,7 @@ class TwitterData:
     def getTwitterData(self, keyword, time):
         self.weekTweets = {}
         if(time == 'lastweek'):
-            for i in range(0,9):
+            for i in range(0,7):
                 params = {'since': self.weekDates[i+1], 'until': self.weekDates[i]}
                 self.weekTweets[i] = self.getData(keyword, params)
             # end loop
@@ -106,7 +106,7 @@ class TwitterData:
 
     # start getTwitterData
     def getData(self, keyword, params = {}):
-        maxTweets = 100  # we can set no. of tweets according to our requirment.
+        maxTweets = 300  # we can set no. of tweets according to our requirment.
         url = 'https://api.twitter.com/1.1/search/tweets.json?'
         data = {'q': keyword, 'lang': 'en', 'result_type': 'mixed', 'since_id': 2014,'count': maxTweets, 'include_entities': 0}
 
