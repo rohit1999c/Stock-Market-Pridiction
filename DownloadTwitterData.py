@@ -21,7 +21,6 @@ import ProcessCSV
 print "Enter any keyword listed below"
 print "Example --> AAPL GOOG YHOO MSFT GS"
 print "-------------------------------------------------"
-print "-------------------------------------------------"
 
 response = raw_input("Please enter Keyword: ")
 
